@@ -136,6 +136,15 @@ a{color:var(--accent)}
 .stack > span:not(.off){animation:fadeIn .35s ease}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .row .who .lst{line-height:14px;padding:1px 7px}
+.card .csub{font-size:14px;color:var(--muted);margin-top:4px}
+.card .ex{background:color-mix(in srgb,var(--accent) 8%,var(--surface));border-radius:10px;padding:12px 14px;display:grid;gap:4px;font-size:15px}
+.card .exl{font:500 11px var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--accent)}
+.glossary{margin-top:18px;display:grid;gap:14px}
+.glossary h3{font-size:24px;font-weight:600;letter-spacing:-.01em}
+.glossary dl{margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px 28px}
+.glossary dl > div{border-top:1px solid var(--line);padding-top:10px;display:grid;gap:3px;min-width:0;align-content:start}
+.glossary dt{font-family:var(--f-display);font-weight:600;font-size:16.5px}
+.glossary dd{margin:0;font-size:15px;color:var(--muted)}
 /* systems */
 .systems{padding-block:56px 20px;display:grid;gap:22px}
 .systems > h2{font-size:clamp(30px,4.4vw,48px);font-weight:800;letter-spacing:-.025em;max-width:20ch}
@@ -159,7 +168,9 @@ a{color:var(--accent)}
 
 @media (max-width:860px){
   .viz{grid-template-columns:1fr}
-  .waffle{max-width:240px}
+  .panel.voters{grid-template-columns:minmax(0,1fr) 128px;align-items:center;padding:16px}
+  .panel.voters .waffle{max-width:128px;gap:3px;margin:0}
+  .panel.voters h2{font-size:19px}
   .cards{grid-template-columns:1fr}
   .method{grid-template-columns:1fr}
   .row{grid-template-columns:minmax(0,1fr) auto;}
@@ -228,7 +239,7 @@ a{color:var(--accent)}
   <section class="stage" id="stage">
     <div class="mode-note"><span class="tag real" id="tag">Réel</span><p id="modeText" class="stack"></p></div>
     <div class="viz">
-      <div class="panel">
+      <div class="panel voters">
         <div><h2 data-i18n="wTitle">100 électeurs</h2><p class="sub" data-i18n="wSub">Comment 100 votes se sont répartis. Ces points ne changent pas.</p></div>
         <div class="waffle" id="waffle" aria-hidden="true"></div>
       </div>
@@ -261,6 +272,7 @@ a{color:var(--accent)}
     <h2 data-i18n="sTitle">Trois façons de transformer des votes en sièges</h2>
     <p data-i18n="sLede">Aucun mode de scrutin n'est neutre : chacun fait des choix entre représentation fidèle, lien avec le territoire et stabilité du gouvernement.</p>
     <div class="cards" id="cards"></div>
+    <div class="glossary"><h3 data-i18n="gTitle">Les mots à connaître</h3><dl id="gloss"></dl></div>
   </section>
 
   <section class="method">
@@ -419,6 +431,7 @@ s2:'13.3% of the vote and no seats (Le Petit Journal, FR)',s3:'Results in maps a
 hemiDesc:'Hemicycle of {N} seats. {list}'
 }};
 
+const EXTRA={"fr": {"sTitle": "Trois façons de transformer des votes en sièges", "sLede": "Un mode de scrutin, c'est la règle qui transforme les votes en sièges de députés. Le parti qui obtient le plus de sièges forme habituellement le gouvernement. Voici les trois règles comparées sur cette page, expliquées simplement.", "pros": "Points forts", "cons": "Points faibles", "where": "Utilisé notamment :", "exL": "Exemple", "oneL": "En une phrase", "cards": [{"m": "fptp", "t": "Uninominal majoritaire à un tour", "sub": "Le système actuel au Québec", "one": "Le Québec est découpé en territoires appelés circonscriptions. Dans chacune, le candidat qui a le plus de votes devient député. Les autres votes ne font élire personne.", "ex": "Dans une circonscription, A obtient 40 %, B 35 % et C 25 %. A est élu. Les 60 % qui ont voté pour B ou C n'ont aucun député.", "pros": ["Chaque territoire a son député, facile à joindre", "Simple à comprendre et à compter", "Donne souvent un gouvernement majoritaire, donc stable"], "cons": ["Un parti peut avoir beaucoup de sièges avec peu de votes, ou l'inverse", "Beaucoup de votes ne font élire personne", "Avantage les partis dont les électeurs sont regroupés au même endroit"], "where": "Québec, Canada, Royaume-Uni, États-Unis"}, {"m": "prop", "t": "Proportionnel", "sub": "Les sièges suivent les votes", "one": "On vote pour un parti. Chaque parti reçoit la même part des sièges que sa part des votes.", "ex": "Un parti obtient 20 % des votes au Québec. Il reçoit environ 20 % des sièges, soit 25 députés sur 127.", "pros": ["L'Assemblée ressemble au vote de la population", "Presque chaque vote aide à élire quelqu'un", "Plus de partis représentés"], "cons": ["Les députés ne représentent pas un territoire précis", "Rarement un parti majoritaire : il faut souvent s'allier", "Les partis choisissent l'ordre des candidats sur leur liste"], "where": "Pays-Bas, Espagne, Israël, Suède"}, {"m": "mixed", "t": "Mixte compensatoire", "sub": "Un mélange des deux", "one": "On vote deux fois : pour un député local et pour un parti. Des sièges supplémentaires sont ensuite donnés aux partis qui ont moins de sièges que leur part des votes.", "ex": "Un parti a 15 % des votes mais ne gagne que 5 circonscriptions. On lui ajoute des députés de liste pour qu'il arrive près de 15 % des sièges.", "pros": ["Garde des députés locaux", "Résultat proche du proportionnel", "Modèle déjà proposé au Québec en 2019 (projet de loi 39)"], "cons": ["Deux sortes de députés aux rôles différents", "Moins de circonscriptions, donc plus grandes", "Plus long à expliquer"], "where": "Allemagne, Nouvelle-Zélande, Écosse"}], "gTitle": "Les mots à connaître", "gloss": [["Circonscription", "Territoire qui élit un député. Il y en a 127 au Québec depuis 2026."], ["Siège", "Une place à l'Assemblée nationale. Un siège = un député = un point sur le demi-cercle."], ["Vote populaire", "Le pourcentage de tous les votes obtenus par un parti au Québec."], ["Majorité", "Avoir plus de la moitié des sièges : 64 sur 127. Le parti peut alors faire adopter ses lois seul."], ["Gouvernement minoritaire", "Le parti au pouvoir a moins de 64 sièges. Il a besoin de l'appui d'autres partis pour voter ses lois."], ["Coalition", "Plusieurs partis s'entendent pour gouverner ensemble. Fréquent avec le proportionnel."], ["Député de liste", "Député choisi à partir de la liste d'un parti plutôt qu'élu dans une circonscription."], ["Seuil", "Pourcentage minimum de votes pour obtenir des sièges de liste. Ici 10 %."]], "meTitle": "Comment on a fait les calculs", "method": ["On utilise les vrais votes de chaque élection : {list}, autres partis {oth}. Entre parenthèses : les sièges réellement obtenus.", "« Actuel » montre le vrai résultat. « Proportionnel » et « Mixte » sont des simulations : on se demande ce que les mêmes votes auraient donné avec une autre règle.", "Proportionnel : on partage les sièges selon le pourcentage de votes de chaque parti. Les très petits partis (« autres ») sont mis de côté.", "Mixte : 80 députés de circonscription, puis des députés de liste pour corriger l'écart. C'est une version simplifiée du projet de loi 39 de 2019.", "Limite importante : avec une autre règle, les gens et les partis auraient peut-être agi autrement. Ces simulations sont donc des ordres de grandeur.", "L'indice de distorsion (Gallagher) résume en un chiffre l'écart entre votes et sièges. 0 = parfaitement fidèle. Plus le chiffre est élevé, plus l'écart est grand.", "Les résultats de 2026 sont préliminaires."]}, "en": {"sTitle": "Three ways to turn votes into seats", "sLede": "A voting system is the rule that turns votes into seats in the legislature. The party with the most seats usually forms the government. Here are the three rules compared on this page, explained simply.", "pros": "Strengths", "cons": "Weaknesses", "where": "Used in:", "exL": "Example", "oneL": "In one sentence", "cards": [{"m": "fptp", "t": "First-past-the-post", "sub": "Quebec's current system", "one": "Quebec is split into areas called ridings. In each, the candidate with the most votes becomes the member. All other votes elect no one.", "ex": "In one riding, A gets 40%, B 35% and C 25%. A wins. The 60% who voted for B or C have no member.", "pros": ["Each area has its own, easy-to-reach member", "Simple to understand and count", "Often gives a majority, so a stable government"], "cons": ["A party can win many seats with few votes, or the reverse", "Many votes elect no one", "Favours parties whose voters live in the same places"], "where": "Quebec, Canada, United Kingdom, United States"}, {"m": "prop", "t": "Proportional", "sub": "Seats follow votes", "one": "You vote for a party. Each party gets the same share of seats as its share of votes.", "ex": "A party gets 20% of the vote across Quebec. It receives about 20% of the seats: 25 members out of 127.", "pros": ["The Assembly looks like how people voted", "Almost every vote helps elect someone", "More parties are represented"], "cons": ["Members don't represent a specific area", "Rarely a majority: parties often have to team up", "Parties choose the order of candidates on their list"], "where": "Netherlands, Spain, Israel, Sweden"}, {"m": "mixed", "t": "Mixed member proportional", "sub": "A blend of both", "one": "You vote twice: for a local member and for a party. Extra seats then go to parties that have fewer seats than their share of votes.", "ex": "A party gets 15% of the vote but wins only 5 ridings. It gets extra list members so it ends up near 15% of the seats.", "pros": ["Keeps local members", "Result close to proportional", "Already proposed in Quebec in 2019 (Bill 39)"], "cons": ["Two kinds of members with different roles", "Fewer, larger ridings", "Takes longer to explain"], "where": "Germany, New Zealand, Scotland"}], "gTitle": "Key words", "gloss": [["Riding", "An area that elects one member. Quebec has 127 since 2026."], ["Seat", "A place in the National Assembly. One seat = one member = one dot on the half-circle."], ["Popular vote", "The percentage of all votes a party gets across Quebec."], ["Majority", "More than half the seats: 64 out of 127. The party can then pass its laws alone."], ["Minority government", "The governing party has fewer than 64 seats. It needs other parties' support to pass laws."], ["Coalition", "Several parties agree to govern together. Common under proportional systems."], ["List member", "A member chosen from a party's list rather than elected in a riding."], ["Threshold", "The minimum share of votes needed to get list seats. Here 10%."]], "meTitle": "How we did the math", "method": ["We use the real votes from each election: {list}, other parties {oth}. In brackets: the seats actually won.", "\"Current\" shows the real result. \"Proportional\" and \"Mixed\" are simulations: what the same votes would have given under another rule.", "Proportional: seats are shared according to each party's percentage of votes. Very small parties (\"other\") are left out.", "Mixed: 80 riding members, then list members to correct the gap. It is a simplified version of Quebec's 2019 Bill 39.", "Important limit: under another rule, voters and parties might have acted differently. These simulations are estimates.", "The distortion index (Gallagher) sums up the gap between votes and seats in one number. 0 = perfectly accurate. The higher the number, the bigger the gap.", "2026 results are preliminary."]}};
 let lang='fr', mode='fptp', year='2026', D=build(year), timer=null;
 try{const s=localStorage.getItem('scrutin-lang');if(s==='fr'||s==='en')lang=s;else if(!/^fr/i.test(navigator.language||'fr'))lang='en';}catch(e){}
 try{const y=localStorage.getItem('scrutin-year');if(E[y]){year=y;D=build(year);}}catch(e){}
@@ -475,7 +488,7 @@ function drawHemi(animate){
 }
 
 function render(animate){
-  const t=T[lang], r=D.res[mode], date=D.e.date[lang]+(D.e.prelim?(lang==='fr'?' (préliminaire)':' (preliminary)'):'');
+  const t=Object.assign({},T[lang],EXTRA[lang]), r=D.res[mode], date=D.e.date[lang]+(D.e.prelim?(lang==='fr'?' (préliminaire)':' (preliminary)'):'');
   const ctx={date:D.e.date[lang],N:D.N,D:DIST,L:D.LIST,m:D.MAJ};
   document.documentElement.lang=lang;
   document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(t[k]!=null)el.textContent=fill(t[k],ctx);});
@@ -529,8 +542,9 @@ function render(animate){
   // cards
   const cards=$('#cards');cards.innerHTML='';
   t.cards.forEach(c=>{const el=document.createElement('article');el.className='card'+(c.m===mode?' on':'');
-    el.innerHTML=`<div class="glyph">${glyph(c.m)}</div><h3>${c.t}</h3><p class="how">${c.how}</p><dl><div><dt>${t.pros}</dt><dd><ul>${c.pros.map(x=>`<li>${x}</li>`).join('')}</ul></dd></div><div><dt>${t.cons}</dt><dd><ul>${c.cons.map(x=>`<li>${x}</li>`).join('')}</ul></dd></div></dl><p class="where"><b>${t.where}</b> ${c.where}</p>`;
+    el.innerHTML=`<div class="glyph">${glyph(c.m)}</div><div><h3>${c.t}</h3><p class="csub">${c.sub}</p></div><p class="how">${c.one}</p><div class="ex"><span class="exl">${t.exL}</span><p>${c.ex}</p></div><dl><div><dt>${t.pros}</dt><dd><ul>${c.pros.map(x=>`<li>${x}</li>`).join('')}</ul></dd></div><div><dt>${t.cons}</dt><dd><ul>${c.cons.map(x=>`<li>${x}</li>`).join('')}</ul></dd></div></dl><p class="where"><b>${t.where}</b> ${c.where}</p>`;
     cards.appendChild(el);});
+  $('#gloss').innerHTML=t.gloss.map(([a,b])=>`<div><dt>${a}</dt><dd>${b}</dd></div>`).join('');
   const resList=[...D.P].sort((a,b)=>b.v-a.v).map(p=>`${p.id} ${pct(p.v,2)} (${p.fptp})`).join(', ');
   $('#methodList').innerHTML=t.method.map(x=>`<li>${fill(x,{list:resList,oth:pct(D.oth.v,2)})}</li>`).join('');
   $('#play .txt').textContent=timer?t.pause:t.play;
