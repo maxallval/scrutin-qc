@@ -1,0 +1,504 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Mêmes votes, trois Assemblées</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: hero thesis → sticky mode switcher → votes waffle beside seat hemicycle → party ledger → three system cards → method */
+:root{
+  --bg:#eef1f5; --surface:#ffffff; --ink:#121a26; --muted:#566275; --line:#d4dbe5; --accent:#1d3f8f; --accent-ink:#ffffff;
+  --empty:#dfe4ec;
+  --qs:#ef8a17; --pq:#2f7de1; --plq:#d6322e; --caq:#119ea3; --pcq:#6a3fa0; --oth:#9aa3b2;
+  --f-display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --f-body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0b111b; --surface:#131b28; --ink:#e7ecf3; --muted:#97a3b6; --line:#253145; --accent:#8fb0f5; --accent-ink:#0b111b;
+  --empty:#1f2a3b; --pcq:#9a74d8; --pq:#4a91ee; --plq:#e5504b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0b111b; --surface:#131b28; --ink:#e7ecf3; --muted:#97a3b6; --line:#253145; --accent:#8fb0f5; --accent-ink:#0b111b;
+  --empty:#1f2a3b; --pcq:#9a74d8; --pq:#4a91ee; --plq:#e5504b; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:20px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.05}
+p{margin:0}
+a{color:var(--accent)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* top bar */
+.top{display:flex;justify-content:space-between;align-items:center;padding-block:18px;gap:12px}
+.brand{font-family:var(--f-display);font-weight:800;font-size:15px;letter-spacing:.01em;display:flex;align-items:center;gap:8px}
+.brand i{display:inline-flex;gap:3px}
+.brand i b{width:7px;height:7px;border-radius:50%;display:block}
+.lang{display:flex;border:1px solid var(--line);border-radius:99px;padding:3px;background:var(--surface)}
+.lang button{font:600 13px var(--f-mono);border:0;background:none;color:var(--muted);padding:5px 11px;border-radius:99px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+/* hero */
+.hero{padding-block:28px 34px;display:grid;gap:22px}
+.hero h1{font-size:clamp(44px,8.4vw,104px);font-weight:800;letter-spacing:-.035em}
+.hero h1 span{display:block;color:var(--muted);font-weight:400}
+.hero .lede{max-width:62ch;font-size:clamp(17px,2vw,20px);color:var(--ink)}
+.hero .lede strong{font-weight:700}
+.facts{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:4px}
+.fact{display:grid;gap:2px}
+.fact .n{font:500 clamp(26px,3.4vw,34px)/1 var(--f-mono);letter-spacing:-.02em}
+.fact .l{font-size:14px;color:var(--muted)}
+
+/* switcher */
+.switch-bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-block:1px solid var(--line)}
+.switch-inner{display:flex;align-items:center;gap:14px;padding-block:10px;flex-wrap:wrap}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px;flex:1 1 520px;position:relative}
+.seg button{position:relative;z-index:1;border:0;background:none;color:var(--ink);font:600 15px var(--f-body);padding:9px 8px;border-radius:9px;cursor:pointer;line-height:1.15;display:grid;gap:1px;text-align:center}
+.seg button small{font:400 11.5px var(--f-mono);color:var(--muted);letter-spacing:.03em}
+.seg button[aria-selected="true"]{color:var(--accent-ink)}
+.seg button[aria-selected="true"] small{color:color-mix(in srgb,var(--accent-ink) 75%,transparent)}
+.seg .thumb{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 16px)/3);background:var(--accent);border-radius:9px;transition:transform .45s cubic-bezier(.6,.1,.2,1)}
+.seg button:focus-visible,.lang button:focus-visible,.play:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.play{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 14px var(--f-body);border-radius:12px;padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.play svg{width:14px;height:14px;fill:currentColor}
+
+/* stage */
+.stage{padding-block:30px 10px;display:grid;gap:26px}
+.mode-note{display:flex;gap:12px;align-items:flex-start;max-width:78ch}
+.tag{flex:none;font:500 11.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:6px;border:1px solid var(--line);color:var(--muted);margin-top:3px}
+.tag.real{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.viz{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.6fr);gap:22px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;min-width:0;display:grid;gap:14px;align-content:start}
+.panel h2{font-size:22px;font-weight:600;letter-spacing:-.01em}
+.panel .sub{font-size:14.5px;color:var(--muted)}
+.waffle{display:grid;grid-template-columns:repeat(10,1fr);gap:clamp(4px,1vw,7px);max-width:300px;width:100%;margin-inline:auto}
+.waffle i{aspect-ratio:1;border-radius:50%;display:block;transition:opacity .25s}
+.hemi svg{width:100%;height:auto;display:block;overflow:visible}
+.hemi circle{transition:fill .55s ease,stroke .55s ease,opacity .25s;transform-box:fill-box;transform-origin:center}
+.hemi circle.pop{animation:pop .6s ease}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.45)}100%{transform:scale(1)}}
+.hemi .bignum{font-family:var(--f-display);font-weight:800;fill:var(--ink)}
+.hemi .smalltxt{font-family:var(--f-mono);fill:var(--muted)}
+.hemi .majline{stroke:var(--muted);stroke-dasharray:3 4;stroke-width:1.2}
+.dim .waffle i:not(.hl),.dim .hemi circle:not(.hl){opacity:.18}
+.verdict{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;border-top:1px solid var(--line);padding-top:14px}
+.chip{display:inline-flex;align-items:center;gap:8px;font-size:15px}
+.chip .dot{width:10px;height:10px;border-radius:50%}
+.gal{margin-left:auto;display:flex;align-items:baseline;gap:8px}
+.gal .n{font:500 22px var(--f-mono)}
+.gal .l{font-size:13px;color:var(--muted);max-width:22ch;line-height:1.25}
+.legend-type{display:flex;gap:16px;font-size:13.5px;color:var(--muted);flex-wrap:wrap}
+.legend-type span{display:inline-flex;align-items:center;gap:6px}
+.legend-type i{width:11px;height:11px;border-radius:50%;display:inline-block;background:var(--muted)}
+.legend-type i.ring{background:color-mix(in srgb,var(--muted) 30%,var(--surface));box-shadow:inset 0 0 0 2px var(--muted)}
+
+/* ledger */
+.ledger{padding-block:14px 10px;display:grid;gap:14px}
+.ledger-head{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap}
+.ledger-head h2{font-size:clamp(26px,3.2vw,34px);font-weight:800;letter-spacing:-.02em}
+.key{display:flex;gap:16px;font-size:13.5px;color:var(--muted);flex-wrap:wrap}
+.key span{display:inline-flex;align-items:center;gap:6px}
+.key .kv{width:20px;height:6px;border-radius:3px;background:repeating-linear-gradient(90deg,var(--muted) 0 3px,transparent 3px 5px)}
+.key .ks{width:20px;height:10px;border-radius:3px;background:var(--muted)}
+.rows{display:grid;border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr) 5.5rem;gap:8px 20px;align-items:center;padding-block:14px;border-bottom:1px solid var(--line);cursor:default}
+.row .who{display:flex;align-items:center;gap:10px;min-width:0}
+.row .who .dot{width:14px;height:14px;border-radius:50%;flex:none}
+.row .who b{font-family:var(--f-display);font-weight:600;font-size:17px}
+.row .who small{display:block;color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bars{display:grid;gap:5px;min-width:0}
+.bar{display:flex;align-items:center;gap:10px;font-size:13.5px}
+.bar .track{flex:1;height:12px;position:relative;min-width:0}
+.bar .fill{position:absolute;inset:0 auto 0 0;border-radius:3px;transition:width .7s cubic-bezier(.6,.1,.2,1)}
+.bar.v .track{height:6px}
+.bar.v .fill{opacity:.9;background-image:repeating-linear-gradient(90deg,transparent 0 3px,var(--surface) 3px 5px)}
+.bar .val{width:11.5rem;flex:none;color:var(--muted)}
+.bar .val b{color:var(--ink);font-weight:500}
+.delta{text-align:right;font:500 16px var(--f-mono)}
+.delta small{display:block;font:400 11.5px var(--f-mono);color:var(--muted)}
+.axis{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr) 5.5rem;gap:20px;font-size:12px;color:var(--muted)}
+.axis div:nth-child(2){display:flex;justify-content:space-between;padding-left:calc(11.5rem + 10px)}
+
+/* systems */
+.systems{padding-block:56px 20px;display:grid;gap:22px}
+.systems > h2{font-size:clamp(30px,4.4vw,48px);font-weight:800;letter-spacing:-.025em;max-width:20ch}
+.systems > p{max-width:64ch;color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;display:grid;gap:14px;align-content:start;min-width:0;transition:border-color .3s}
+.card.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.card .glyph{height:34px;display:flex;align-items:center}
+.card h3{font-size:23px;font-weight:600;letter-spacing:-.01em}
+.card .how{font-size:16px}
+.card dl{margin:0;display:grid;gap:10px}
+.card dt{font:500 11.5px var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.card dd{margin:0}
+.card ul{margin:4px 0 0;padding-left:18px;display:grid;gap:4px;font-size:15.5px}
+.card .where{font-size:14px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+
+/* method */
+.method{padding-block:40px 60px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;font-size:15px;color:var(--muted)}
+.method h3{font-size:18px;color:var(--ink);font-weight:600;margin-bottom:8px}
+.method ul{margin:0;padding-left:18px;display:grid;gap:6px}
+
+@media (max-width:860px){
+  .viz{grid-template-columns:1fr}
+  .waffle{max-width:240px}
+  .cards{grid-template-columns:1fr}
+  .method{grid-template-columns:1fr}
+  .row{grid-template-columns:minmax(0,1fr) auto;}
+  .row .bars{grid-column:1 / -1;grid-row:2}
+  .axis{display:none}
+}
+@media (max-width:520px){
+  body{font-size:16px}
+  .wrap{padding-inline:16px}
+  .seg button{font-size:13.5px;padding:8px 4px}
+  .seg button small{font-size:10.5px}
+  .play .txt{display:none}
+  .play{padding:12px}
+  .switch-inner{flex-wrap:nowrap}
+  .bar .val{width:7.6rem;font-size:12.5px}
+  .gal{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><i><b style="background:var(--qs)"></b><b style="background:var(--pq)"></b><b style="background:var(--plq)"></b><b style="background:var(--caq)"></b><b style="background:var(--pcq)"></b></i><span data-i18n="brand">Mode de scrutin · Québec 2026</span></div>
+    <div class="lang" role="group" aria-label="Langue / Language">
+      <button id="lang-fr" type="button" data-lang="fr" aria-pressed="true">FR</button>
+      <button id="lang-en" type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow" data-i18n="eyebrow">Élection générale du Québec · 5 octobre 2026</p>
+    <h1><span data-i18n="h1a">Mêmes votes.</span><span data-i18n="h1b" style="color:var(--ink);font-weight:800">Trois Assemblées.</span></h1>
+    <p class="lede" data-i18n-html="lede">Chaque point est un siège à l'Assemblée nationale. Changez de mode de scrutin et regardez les mêmes votes produire une Assemblée différente.</p>
+    <div class="facts">
+      <div class="fact"><span class="n mono" id="f1">28 % → 46 %</span><span class="l" data-i18n="f1">PQ : part des votes → part des sièges</span></div>
+      <div class="fact"><span class="n mono" id="f2">13,3 % → 0</span><span class="l" data-i18n="f2">CAQ : votes → sièges</span></div>
+      <div class="fact"><span class="n mono">64</span><span class="l" data-i18n="f3">sièges pour une majorité</span></div>
+    </div>
+  </section>
+</div>
+
+<div class="switch-bar">
+  <div class="wrap switch-inner">
+    <div class="seg" role="tablist" aria-label="Mode de scrutin" id="seg">
+      <span class="thumb" id="thumb"></span>
+      <button role="tab" id="m-fptp" data-mode="fptp" aria-selected="true"><span data-i18n="m1">Actuel</span><small data-i18n="m1s">uninominal</small></button>
+      <button role="tab" id="m-prop" data-mode="prop" aria-selected="false" tabindex="-1"><span data-i18n="m2">Proportionnel</span><small data-i18n="m2s">simulation</small></button>
+      <button role="tab" id="m-mixed" data-mode="mixed" aria-selected="false" tabindex="-1"><span data-i18n="m3">Mixte</span><small data-i18n="m3s">simulation</small></button>
+    </div>
+    <button class="play" id="play" type="button"><svg viewBox="0 0 16 16" id="playIcon"><path d="M3 2l11 6-11 6z"/></svg><span class="txt" data-i18n="play">Animer</span></button>
+  </div>
+</div>
+
+<main class="wrap">
+  <section class="stage" id="stage">
+    <div class="mode-note"><span class="tag real" id="tag">Réel</span><p id="modeText"></p></div>
+    <div class="viz">
+      <div class="panel">
+        <div><h2 data-i18n="wTitle">100 électeurs</h2><p class="sub" data-i18n="wSub">Comment 100 votes se sont répartis. Ces points ne changent pas.</p></div>
+        <div class="waffle" id="waffle" aria-hidden="true"></div>
+      </div>
+      <div class="panel hemi">
+        <div><h2 data-i18n="hTitle">127 sièges</h2><p class="sub" id="hSub"></p></div>
+        <svg id="hemi" viewBox="0 0 420 232" role="img" aria-labelledby="hemiDesc"><desc id="hemiDesc"></desc></svg>
+        <div class="legend-type" id="typeLegend" hidden>
+          <span><i></i><span data-i18n="lgD">Député de circonscription</span></span>
+          <span><i class="ring"></i><span data-i18n="lgL">Député de liste (compensatoire)</span></span>
+        </div>
+        <div class="verdict">
+          <span class="chip" id="verdict"></span>
+          <div class="gal"><span class="n mono" id="gal">0</span><span class="l" data-i18n="gal">indice de distorsion (Gallagher) · 0 = parfait</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ledger" id="ledger">
+    <div class="ledger-head">
+      <h2 data-i18n="lTitle">Votes et sièges, parti par parti</h2>
+      <div class="key"><span><i class="kv"></i><span data-i18n="kV">% des votes</span></span><span><i class="ks"></i><span data-i18n="kS">% des sièges</span></span></div>
+    </div>
+    <div class="rows" id="rows"></div>
+    <div class="axis" aria-hidden="true"><div></div><div><span>0 %</span><span>25 %</span><span>50 %</span></div><div style="text-align:right" data-i18n="axD">écart</div></div>
+  </section>
+
+  <section class="systems">
+    <p class="eyebrow" data-i18n="sEyebrow">Comprendre</p>
+    <h2 data-i18n="sTitle">Trois façons de transformer des votes en sièges</h2>
+    <p data-i18n="sLede">Aucun mode de scrutin n'est neutre : chacun fait des choix entre représentation fidèle, lien avec le territoire et stabilité du gouvernement.</p>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section class="method">
+    <div>
+      <h3 data-i18n="meTitle">Méthode</h3>
+      <ul id="methodList"></ul>
+    </div>
+    <div>
+      <h3 data-i18n="srcTitle">Sources</h3>
+      <ul>
+        <li><a href="https://fr.wikipedia.org/wiki/R%C3%A9sultats_d%C3%A9taill%C3%A9s_des_%C3%A9lections_g%C3%A9n%C3%A9rales_qu%C3%A9b%C3%A9coises_de_2026" target="_blank" rel="noopener" data-i18n="s1">Résultats détaillés des élections générales québécoises de 2026 (Wikipédia)</a></li>
+        <li><a href="https://lepetitjournal.com/montreal/actualites/elections-au-quebec-133-des-voix-et-aucun-depute-comment-est-ce-possible-455523" target="_blank" rel="noopener" data-i18n="s2">13,3 % des voix et aucun député (Le Petit Journal)</a></li>
+        <li><a href="https://ici.radio-canada.ca/info/2026/elections-quebec/resultats-cartes-graphiques-avant-apres/" target="_blank" rel="noopener" data-i18n="s3">Les résultats en cartes et graphiques (Radio-Canada)</a></li>
+        <li><a href="https://www.electionsquebec.qc.ca/" target="_blank" rel="noopener" data-i18n="s4">Élections Québec (résultats officiels)</a></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+const P = [
+  {id:'QS',  c:'--qs',  v:12.43, fptp:9,  n:{fr:'Québec solidaire',en:'Québec solidaire'}},
+  {id:'PQ',  c:'--pq',  v:28.02, fptp:59, n:{fr:'Parti québécois',en:'Parti Québécois'}},
+  {id:'PLQ', c:'--plq', v:24.22, fptp:40, n:{fr:'Parti libéral du Québec',en:'Quebec Liberal Party'}},
+  {id:'CAQ', c:'--caq', v:13.30, fptp:0,  n:{fr:'Coalition avenir Québec',en:'Coalition Avenir Québec'}},
+  {id:'PCQ', c:'--pcq', v:20.67, fptp:19, n:{fr:'Parti conservateur du Québec',en:'Conservative Party of Quebec'}},
+];
+const OTH = {id:'OTH', c:'--oth', v:+(100 - P.reduce((a,p)=>a+p.v,0)).toFixed(2), n:{fr:'Autres partis',en:'Other parties'}};
+const SEATS=127, MAJ=64, DIST=80, LIST=SEATS-DIST, THRESH=10;
+
+function largestRemainder(weights,total){
+  const sum=weights.reduce((a,b)=>a+b,0);
+  const q=weights.map(w=>w*total/sum), f=q.map(Math.floor);
+  let left=total-f.reduce((a,b)=>a+b,0);
+  q.map((x,i)=>[x-Math.floor(x),i]).sort((a,b)=>b[0]-a[0]).slice(0,left).forEach(([,i])=>f[i]++);
+  return f;
+}
+// Proportional: 127 seats on Quebec-wide vote shares (Hare, largest remainder). "Others" are many tiny parties: not allocated.
+const prop = (()=>{const q=P.map(p=>p.v*SEATS/100),f=q.map(Math.floor);let left=SEATS-f.reduce((a,b)=>a+b,0);
+  q.map((x,i)=>[x-Math.floor(x),i]).sort((a,b)=>b[0]-a[0]).slice(0,left).forEach(([,i])=>f[i]++);return f;})();
+// Mixed: 80 ridings (actual results scaled), 47 compensatory list seats by d'Hondt over district seats (AMS), 10% threshold.
+const mixD = largestRemainder(P.map(p=>p.fptp),DIST);
+const mixL = P.map(()=>0);
+for(let k=0;k<LIST;k++){let best=-1,bi=-1;P.forEach((p,i)=>{if(p.v<THRESH)return;const qq=p.v/(mixD[i]+mixL[i]+1);if(qq>best){best=qq;bi=i}});mixL[bi]++;}
+const RES = {
+  fptp:{seats:P.map(p=>p.fptp),list:P.map(()=>0)},
+  prop:{seats:prop,list:P.map(()=>0)},
+  mixed:{seats:P.map((p,i)=>mixD[i]+mixL[i]),list:mixL}
+};
+function gallagher(seats){let s=P.reduce((a,p,i)=>a+Math.pow(p.v-seats[i]/SEATS*100,2),0)+OTH.v*OTH.v;return Math.sqrt(s/2);}
+
+const T = {
+fr:{brand:'Mode de scrutin · Québec 2026',eyebrow:'Élection générale du Québec · 5 octobre 2026',h1a:'Mêmes votes.',h1b:'Trois Assemblées.',
+lede:"Chaque point est un siège à l'Assemblée nationale. Changez de mode de scrutin et regardez les <strong>mêmes votes</strong> produire une Assemblée différente.",
+f1:'PQ : part des votes → part des sièges',f2:'CAQ : votes → sièges',f3:'sièges pour une majorité',
+m1:'Actuel',m1s:'uninominal',m2:'Proportionnel',m2s:'simulation',m3:'Mixte',m3s:'simulation',play:'Animer',pause:'Arrêter',
+real:'Réel',sim:'Simulation',
+mode_fptp:"Résultat du 5 octobre. Dans chacune des 127 circonscriptions, le candidat arrivé premier remporte le siège, même sans la majorité des voix. Les votes pour les autres candidats ne donnent aucun siège.",
+mode_prop:"Les 127 sièges sont répartis selon le pourcentage des votes obtenu par chaque parti à l'échelle du Québec. Pas de circonscriptions : les députés viennent de listes de partis.",
+mode_mixed:"80 députés élus dans des circonscriptions, comme aujourd'hui, et 47 députés de liste qui compensent l'écart entre votes et sièges. Seuil de 10 % pour obtenir des sièges de liste.",
+wTitle:'100 électeurs',wSub:'Comment 100 votes se sont répartis. Ces points ne changent pas.',hTitle:'127 sièges',
+hSub_fptp:'Assemblée élue le 5 octobre',hSub_prop:'Assemblée si les sièges suivaient les votes',hSub_mixed:'Assemblée avec un mode mixte compensatoire',
+lgD:'Député de circonscription',lgL:'Député de liste (compensatoire)',
+gal:'indice de distorsion (Gallagher) · 0 = parfait',
+maj:'{p} majoritaire · {s} sièges',min:'{p} minoritaire · {s} sièges sur 64 requis',
+lTitle:'Votes et sièges, parti par parti',kV:'% des votes',kS:'% des sièges',axD:'écart',
+votes:'votes',seats:'sièges',seat:'siège',pts:'pts',delta:'sièges − votes',
+sEyebrow:'Comprendre',sTitle:'Trois façons de transformer des votes en sièges',
+sLede:"Aucun mode de scrutin n'est neutre : chacun fait des choix entre représentation fidèle, lien avec le territoire et stabilité du gouvernement.",
+how:'Comment ça marche',pros:'Avantages',cons:'Limites',where:'Utilisé notamment',
+cards:[
+ {m:'fptp',t:'Uninominal majoritaire à un tour',how:"Le Québec est divisé en 127 circonscriptions. Dans chacune, l'électeur vote pour un candidat. Celui qui a le plus de votes gagne, même avec 30 %.",
+  pros:['Chaque région a son député, facile à identifier','Simple à comprendre et à dépouiller','Produit souvent des gouvernements majoritaires'],
+  cons:['La part des sièges peut s\'éloigner beaucoup de la part des votes','Les votes pour les candidats perdants ne font élire personne','Avantage les partis dont le vote est concentré géographiquement'],
+  where:'Québec, Canada, Royaume-Uni, États-Unis'},
+ {m:'prop',t:'Proportionnel de liste',how:"L'électeur vote pour un parti. Chaque parti reçoit un nombre de sièges proportionnel à son pourcentage de votes, souvent au-delà d'un seuil minimal.",
+  pros:['La composition de l\'Assemblée reflète fidèlement le vote','Presque chaque vote contribue à élire quelqu\'un','Plus de diversité de partis représentés'],
+  cons:['Lien plus faible entre un député et un territoire','Gouvernements de coalition fréquents, parfois longs à former','Les partis décident de l\'ordre des candidats sur les listes'],
+  where:'Pays-Bas, Espagne, Israël, Suède'},
+ {m:'mixed',t:'Mixte compensatoire',how:"Deux votes : un pour le député de sa circonscription, un pour un parti. Des sièges de liste sont ensuite ajoutés pour corriger l'écart entre votes et sièges.",
+  pros:['Conserve des députés locaux','Résultat global proche de la proportionnelle','Modèle proposé au Québec en 2019 (projet de loi 39)'],
+  cons:['Deux catégories de députés aux rôles différents','Circonscriptions plus grandes, moins nombreuses','Plus complexe à expliquer et à calculer'],
+  where:'Allemagne, Nouvelle-Zélande, Écosse'}
+],
+meTitle:'Méthode',srcTitle:'Sources',
+method:[
+ 'Résultats préliminaires du 5 octobre 2026 : PQ 28,02 %, PLQ 24,22 %, PCQ 20,67 %, CAQ 13,3 %, QS 12,43 %, autres partis environ 1,4 %.',
+ 'Proportionnel : 127 sièges répartis selon les votes à l\'échelle du Québec (méthode du plus fort reste). Les « autres partis » regroupent plusieurs petites formations, aucune n\'atteint un siège seule.',
+ 'Mixte : inspiré du projet de loi 39 (2019), adapté à 127 sièges. Les 80 sièges de circonscription sont estimés en réduisant à l\'échelle les résultats réels ; les 47 sièges de liste compensent à l\'échelle du Québec (d\'Hondt), seuil de 10 %. Le modèle de 2019 prévoyait une compensation par région.',
+ 'Les simulations supposent que les électeurs auraient voté de la même façon. Dans les faits, un autre mode de scrutin change aussi les stratégies des partis et des électeurs.',
+ 'Indice de Gallagher : mesure l\'écart global entre % des votes et % des sièges. Plus il est élevé, plus la représentation est déformée.'
+],
+s1:'Résultats détaillés des élections générales québécoises de 2026 (Wikipédia)',s2:'13,3 % des voix et aucun député (Le Petit Journal)',s3:'Les résultats en cartes et graphiques (Radio-Canada)',s4:'Élections Québec (résultats officiels)',
+hemiDesc:'Hémicycle de 127 sièges. {list}'
+},
+en:{brand:'Voting systems · Quebec 2026',eyebrow:'Quebec general election · October 5, 2026',h1a:'Same votes.',h1b:'Three Assemblies.',
+lede:"Each dot is a seat in the National Assembly. Switch the voting system and watch the <strong>same votes</strong> produce a different Assembly.",
+f1:'PQ: share of votes → share of seats',f2:'CAQ: votes → seats',f3:'seats for a majority',
+m1:'Current',m1s:'first-past-the-post',m2:'Proportional',m2s:'simulation',m3:'Mixed',m3s:'simulation',play:'Animate',pause:'Stop',
+real:'Actual',sim:'Simulation',
+mode_fptp:"Result of October 5. In each of the 127 ridings, the candidate who finishes first wins the seat, even without a majority of votes. Votes for every other candidate elect no one.",
+mode_prop:"All 127 seats are shared according to each party's percentage of the Quebec-wide vote. No ridings: members come from party lists.",
+mode_mixed:"80 members elected in ridings, as today, plus 47 list members who make up the gap between votes and seats. A 10% threshold applies to list seats.",
+wTitle:'100 voters',wSub:'How 100 votes were split. These dots never change.',hTitle:'127 seats',
+hSub_fptp:'Assembly elected on October 5',hSub_prop:'Assembly if seats followed votes',hSub_mixed:'Assembly under a mixed compensatory system',
+lgD:'Riding member',lgL:'List member (compensatory)',
+gal:'distortion index (Gallagher) · 0 = perfect',
+maj:'{p} majority · {s} seats',min:'{p} minority · {s} of 64 needed',
+lTitle:'Votes and seats, party by party',kV:'% of votes',kS:'% of seats',axD:'gap',
+votes:'votes',seats:'seats',seat:'seat',pts:'pts',delta:'seats − votes',
+sEyebrow:'Understand',sTitle:'Three ways to turn votes into seats',
+sLede:"No voting system is neutral: each one trades off accurate representation, ties to a territory, and government stability.",
+how:'How it works',pros:'Strengths',cons:'Limits',where:'Used in',
+cards:[
+ {m:'fptp',t:'First-past-the-post',how:"Quebec is split into 127 ridings. In each, voters pick one candidate. Whoever gets the most votes wins, even with 30%.",
+  pros:['Every region has its own, easy-to-identify member','Simple to understand and to count','Often produces majority governments'],
+  cons:['Seat share can drift far from vote share','Votes for losing candidates elect no one','Favours parties whose vote is geographically concentrated'],
+  where:'Quebec, Canada, United Kingdom, United States'},
+ {m:'prop',t:'List proportional',how:"Voters choose a party. Each party gets a number of seats proportional to its vote share, often above a minimum threshold.",
+  pros:['The Assembly closely mirrors the vote','Almost every vote helps elect someone','A wider range of parties is represented'],
+  cons:['Weaker link between a member and a territory','Coalition governments are common and can take time to form','Parties decide the order of candidates on lists'],
+  where:'Netherlands, Spain, Israel, Sweden'},
+ {m:'mixed',t:'Mixed member proportional',how:"Two votes: one for a local member, one for a party. List seats are then added to correct the gap between votes and seats.",
+  pros:['Keeps local members','Overall result close to proportional','Model proposed in Quebec in 2019 (Bill 39)'],
+  cons:['Two kinds of members with different roles','Fewer, larger ridings','Harder to explain and to calculate'],
+  where:'Germany, New Zealand, Scotland'}
+],
+meTitle:'Method',srcTitle:'Sources',
+method:[
+ 'Preliminary results of October 5, 2026: PQ 28.02%, PLQ 24.22%, PCQ 20.67%, CAQ 13.3%, QS 12.43%, other parties about 1.4%.',
+ 'Proportional: 127 seats allocated on the Quebec-wide vote (largest remainder method). "Other parties" are several small parties; none reaches a seat on its own.',
+ 'Mixed: based on Bill 39 (2019), adapted to 127 seats. The 80 riding seats are estimated by scaling down the actual results; the 47 list seats compensate Quebec-wide (d\'Hondt) with a 10% threshold. The 2019 model compensated region by region.',
+ 'Simulations assume people would have voted the same way. In practice, a different system also changes how parties campaign and how people vote.',
+ 'Gallagher index: measures the overall gap between % of votes and % of seats. The higher it is, the more distorted the representation.'
+],
+s1:'Detailed results of the 2026 Quebec general election (Wikipedia, FR)',s2:'13.3% of the vote and no seats (Le Petit Journal, FR)',s3:'Results in maps and charts (Radio-Canada, FR)',s4:'Élections Québec (official results)',
+hemiDesc:'Hemicycle of 127 seats. {list}'
+}};
+
+let lang='fr', mode='fptp';
+try{const s=localStorage.getItem('scrutin-lang');if(s==='fr'||s==='en')lang=s;else if(!/^fr/i.test(navigator.language||'fr'))lang='en';}catch(e){}
+
+const $=s=>document.querySelector(s);
+const cssv=v=>`var(${v})`;
+const fmt=(n,d=1)=>new Intl.NumberFormat(lang==='fr'?'fr-CA':'en-CA',{minimumFractionDigits:d,maximumFractionDigits:d}).format(n);
+const pct=(n,d=1)=>lang==='fr'?fmt(n,d)+' %':fmt(n,d)+'%';
+
+/* waffle: 100 voters */
+const wN=largestRemainder([...P.map(p=>p.v),OTH.v],100);
+const waffle=$('#waffle');
+[...P,OTH].forEach((p,i)=>{for(let k=0;k<wN[i];k++){const d=document.createElement('i');d.style.background=cssv(p.c);d.dataset.p=p.id;waffle.appendChild(d);}});
+
+/* hemicycle geometry */
+const svg=$('#hemi'), NS='http://www.w3.org/2000/svg', cx=210, cy=214, R=200, r0=96, ROWS=7;
+const radii=[...Array(ROWS)].map((_,i)=>r0+(R-r0)*i/(ROWS-1));
+const counts=largestRemainder(radii,SEATS);
+const pos=[];
+radii.forEach((r,i)=>{const n=counts[i];for(let j=0;j<n;j++){const a=Math.PI-Math.PI*j/(n-1);pos.push({a,r,x:cx+r*Math.cos(a),y:cy-r*Math.sin(a)});}});
+pos.sort((A,B)=>B.a-A.a||A.r-B.r);
+const dotR=Math.min((R-r0)/(ROWS-1)*0.4, 7.6);
+const majL=document.createElementNS(NS,'line');majL.setAttribute('class','majline');majL.setAttribute('x1',cx);majL.setAttribute('x2',cx);majL.setAttribute('y1',cy-r0+18);majL.setAttribute('y2',cy-R-14);svg.appendChild(majL);
+const circles=pos.map(p=>{const c=document.createElementNS(NS,'circle');c.setAttribute('cx',p.x.toFixed(2));c.setAttribute('cy',p.y.toFixed(2));c.setAttribute('r',dotR.toFixed(2));c.setAttribute('fill','var(--empty)');svg.appendChild(c);return c;});
+const big=document.createElementNS(NS,'text');big.setAttribute('class','bignum');big.setAttribute('x',cx);big.setAttribute('y',cy-26);big.setAttribute('text-anchor','middle');big.setAttribute('font-size','40');svg.appendChild(big);
+const small=document.createElementNS(NS,'text');small.setAttribute('class','smalltxt');small.setAttribute('x',cx);small.setAttribute('y',cy-4);small.setAttribute('text-anchor','middle');small.setAttribute('font-size','10.5');svg.appendChild(small);
+const majT=document.createElementNS(NS,'text');majT.setAttribute('class','smalltxt');majT.setAttribute('x',cx+6);majT.setAttribute('y',cy-R-6);majT.setAttribute('font-size','10');majT.textContent='64';svg.appendChild(majT);
+
+let prevAssign=null;
+function assign(m){const r=RES[m],out=[];P.forEach((p,i)=>{const d=r.seats[i]-r.list[i];for(let k=0;k<d;k++)out.push({p,list:false});for(let k=0;k<r.list[i];k++)out.push({p,list:true});});return out;}
+
+function drawHemi(animate){
+  const a=assign(mode);
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  a.forEach((s,i)=>{const c=circles[i];const col=cssv(s.p.c);
+    const changed=!prevAssign||prevAssign[i].p.id!==s.p.id||prevAssign[i].list!==s.list;
+    c.style.transitionDelay=(animate&&!reduce)?(i*7)+'ms':'0ms';
+    c.setAttribute('fill',s.list?`color-mix(in srgb, ${col} 28%, var(--surface))`:col);
+    c.setAttribute('stroke',s.list?col:'none');c.setAttribute('stroke-width',s.list?'2':'0');
+    c.dataset.p=s.p.id;
+    if(animate&&changed&&!reduce){c.classList.remove('pop');void c.getBBox();c.style.animationDelay=(i*7)+'ms';c.classList.add('pop');}
+  });
+  prevAssign=a;
+}
+
+function render(animate){
+  const t=T[lang];const r=RES[mode];
+  document.documentElement.lang=lang;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(t[k]!=null)el.textContent=t[k];});
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{el.innerHTML=t[el.dataset.i18nHtml];});
+  document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===lang));
+  $('#seg').setAttribute('aria-label',lang==='fr'?'Mode de scrutin':'Voting system');
+  // facts
+  $('#f1').textContent=`${pct(28.02,0)} → ${pct(59/SEATS*100,0)}`;
+  $('#f2').textContent=`${pct(13.3)} → 0`;
+  // switcher
+  const idx=['fptp','prop','mixed'].indexOf(mode);
+  $('#thumb').style.transform=`translateX(calc(${idx} * (100% + 4px)))`;
+  document.querySelectorAll('.seg button').forEach(b=>{const on=b.dataset.mode===mode;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;});
+  // notes
+  const tag=$('#tag');tag.textContent=mode==='fptp'?t.real:t.sim;tag.classList.toggle('real',mode==='fptp');
+  $('#modeText').textContent=t['mode_'+mode];
+  $('#hSub').textContent=t['hSub_'+mode];
+  $('#typeLegend').hidden=mode!=='mixed';
+  // hemi
+  drawHemi(animate);
+  const bi=r.seats.indexOf(Math.max(...r.seats)), bp=P[bi], bs=r.seats[bi];
+  big.textContent=bs; big.style.fill=cssv(bp.c);
+  small.textContent=`${bs>=MAJ?(lang==='fr'?'majorité':'majority'):(lang==='fr'?'pas de majorité':'no majority')}`;
+  $('#verdict').innerHTML=`<i class="dot" style="background:${cssv(bp.c)}"></i><span>${(bs>=MAJ?t.maj:t.min).replace('{p}',bp.id).replace('{s}',bs)}</span>`;
+  $('#gal').textContent=fmt(gallagher(r.seats));
+  $('#hemiDesc').textContent=t.hemiDesc.replace('{list}',P.map((p,i)=>`${p.n[lang]}: ${r.seats[i]}`).join(', '));
+  // rows
+  const order=[...P.map((p,i)=>({p,i})),{p:OTH,i:-1}].sort((a,b)=>b.p.v-a.p.v);
+  const rows=$('#rows');
+  if(!rows.children.length){order.forEach(({p})=>{const d=document.createElement('div');d.className='row';d.dataset.p=p.id;d.innerHTML=`<div class="who"><i class="dot" style="background:${cssv(p.c)}"></i><div style="min-width:0"><b>${p.id==='OTH'?'':p.id}</b><small></small></div></div><div class="bars"><div class="bar v"><span class="val"></span><span class="track"><span class="fill" style="background-color:${cssv(p.c)}"></span></span></div><div class="bar s"><span class="val"></span><span class="track"><span class="fill" style="background:${cssv(p.c)}"></span></span></div></div><div class="delta mono"></div>`;rows.appendChild(d);
+    d.addEventListener('mouseenter',()=>hl(p.id));d.addEventListener('mouseleave',()=>hl(null));});}
+  order.forEach(({p,i})=>{const d=rows.querySelector(`[data-p="${p.id}"]`);const s=i<0?0:r.seats[i];const sp=s/SEATS*100;const dl=sp-p.v;
+    d.querySelector('.who b').textContent=p.id==='OTH'?p.n[lang]:p.id;
+    d.querySelector('.who small').textContent=p.id==='OTH'?'':p.n[lang];
+    d.querySelector('.bar.v .val').innerHTML=`<b>${pct(p.v)}</b> ${t.votes}`;
+    d.querySelector('.bar.v .fill').style.width=(p.v/50*100)+'%';
+    const lst=i>=0&&r.list[i]?` <span style="opacity:.75">(${r.list[i]} ${lang==='fr'?'liste':'list'})</span>`:'';
+    d.querySelector('.bar.s .val').innerHTML=`<b>${s}</b> ${(s===1||(lang==='fr'&&s===0))?t.seat:t.seats} · ${pct(sp)}${lst}`;
+    d.querySelector('.bar.s .fill').style.width=(sp/50*100)+'%';
+    const sign=dl>0.05?'+':dl<-0.05?'−':'';
+    d.querySelector('.delta').innerHTML=`${sign}${fmt(Math.abs(dl))}<small>${t.pts}</small>`;
+    d.querySelector('.delta').style.color=Math.abs(dl)<1.5?'var(--muted)':'var(--ink)';
+  });
+  // cards
+  const cards=$('#cards');cards.innerHTML='';
+  t.cards.forEach(c=>{const el=document.createElement('article');el.className='card'+(c.m===mode?' on':'');
+    el.innerHTML=`<div class="glyph">${glyph(c.m)}</div><h3>${c.t}</h3><p class="how">${c.how}</p><dl><div><dt>${t.pros}</dt><dd><ul>${c.pros.map(x=>`<li>${x}</li>`).join('')}</ul></dd></div><div><dt>${t.cons}</dt><dd><ul>${c.cons.map(x=>`<li>${x}</li>`).join('')}</ul></dd></div></dl><p class="where"><b>${t.where} :</b> ${c.where}</p>`.replace(' :</b>',lang==='fr'?' :</b>':':</b>');
+    cards.appendChild(el);});
+  $('#methodList').innerHTML=t.method.map(x=>`<li>${x}</li>`).join('');
+  $('#play .txt').textContent=timer?t.pause:t.play;
+}
+function glyph(m){
+  const cols=['--qs','--pq','--plq','--caq','--pcq'];
+  if(m==='fptp'){return `<svg width="96" height="28" viewBox="0 0 96 28" aria-hidden="true">${[0,1,2,3,4].map(i=>`<rect x="${i*19}" y="2" width="16" height="24" rx="3" fill="none" stroke="var(--line)" stroke-width="1.5"/><circle cx="${i*19+8}" cy="14" r="5" fill="var(${[ '--pq','--plq','--pq','--pcq','--pq'][i]})"/>`).join('')}</svg>`;}
+  if(m==='prop'){const w=[12,28,24,13,21];let x=0;return `<svg width="100" height="28" viewBox="0 0 100 28" aria-hidden="true">${w.map((v,i)=>{const r=`<rect x="${x}" y="8" width="${v-1.5}" height="12" rx="2" fill="var(${cols[i]})"/>`;x+=v;return r}).join('')}</svg>`;}
+  return `<svg width="100" height="28" viewBox="0 0 100 28" aria-hidden="true">${[0,1,2,3,4,5].map(i=>`<circle cx="${8+i*15}" cy="9" r="5" fill="var(${['--pq','--pq','--plq','--pq','--plq','--pcq'][i]})"/>`).join('')}${[0,1,2,3,4].map(i=>`<circle cx="${15+i*15}" cy="21" r="4.4" fill="var(--surface)" stroke="var(${['--caq','--qs','--pcq','--caq','--pcq'][i]})" stroke-width="2"/>`).join('')}</svg>`;
+}
+function hl(id){const st=$('#stage');if(!id){st.classList.remove('dim');document.querySelectorAll('.hl').forEach(e=>e.classList.remove('hl'));return;}
+  st.classList.add('dim');document.querySelectorAll('#waffle i, #hemi circle').forEach(e=>e.classList.toggle('hl',e.dataset.p===id));}
+
+function setMode(m,anim=true){if(m===mode)return;mode=m;render(anim);}
+document.querySelectorAll('.seg button').forEach(b=>{
+  b.addEventListener('click',()=>{stop();setMode(b.dataset.mode);});
+  b.addEventListener('keydown',e=>{const ms=['fptp','prop','mixed'];let i=ms.indexOf(mode);
+    if(e.key==='ArrowRight'){i=(i+1)%3}else if(e.key==='ArrowLeft'){i=(i+2)%3}else return;
+    e.preventDefault();stop();setMode(ms[i]);$('#m-'+ms[i]).focus();});
+});
+document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>{lang=b.dataset.lang;try{localStorage.setItem('scrutin-lang',lang)}catch(e){}render(false);}));
+let timer=null;
+function stop(){if(timer){clearInterval(timer);timer=null;$('#playIcon').innerHTML='<path d="M3 2l11 6-11 6z"/>';$('#play .txt').textContent=T[lang].play;}}
+$('#play').addEventListener('click',()=>{
+  if(timer){stop();return;}
+  const ms=['fptp','prop','mixed'];const step=()=>setMode(ms[(ms.indexOf(mode)+1)%3]);
+  step();timer=setInterval(step,3600);
+  $('#playIcon').innerHTML='<path d="M3 2h4v12H3zM9 2h4v12H9z"/>';$('#play .txt').textContent=T[lang].pause;
+});
+render(false);
+})();
+</script>
+
+</body></html>
