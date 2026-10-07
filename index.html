@@ -126,6 +126,16 @@ a{color:var(--accent)}
 .axis{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr) 5.5rem;gap:20px;font-size:12px;color:var(--muted)}
 .axis div:nth-child(2){display:flex;justify-content:space-between;padding-left:calc(11.5rem + 10px)}
 
+.row .who .lst{display:inline-block;margin-left:8px;font:500 11px var(--f-mono);padding:2px 7px;border-radius:99px;border:1px solid var(--line);color:var(--muted);vertical-align:2px;white-space:nowrap}
+.bar .val{white-space:nowrap}
+.tag{min-width:calc(10ch + .6em + 18px);text-align:center}
+.stack{display:grid}
+.vline{display:flex;align-items:center;gap:8px}
+.stack > span{grid-area:1/1}
+.off{visibility:hidden}
+.stack > span:not(.off){animation:fadeIn .35s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.row .who .lst{line-height:14px;padding:1px 7px}
 /* systems */
 .systems{padding-block:56px 20px;display:grid;gap:22px}
 .systems > h2{font-size:clamp(30px,4.4vw,48px);font-weight:800;letter-spacing:-.025em;max-width:20ch}
@@ -164,7 +174,15 @@ a{color:var(--accent)}
   .play .txt{display:none}
   .play{padding:12px}
   .years{flex:1 1 100%}.years button{flex:1}.seg{flex:1 1 0}
-  .bar .val{width:7.6rem;font-size:12.5px}
+  .bar .val{width:7.2rem;font-size:12px}
+  .row{padding-block:10px;gap:4px 14px}
+  .row .who b{font-size:15.5px}
+  .row .who small{font-size:12px}
+  .row .who .dot{width:12px;height:12px}
+  .bars{gap:3px}
+  .bar .track{height:10px}
+  .bar.v .track{height:5px}
+  .delta{font-size:14.5px}
   .gal{margin-left:0}
 }
 @media (prefers-reduced-motion:reduce){
@@ -208,21 +226,21 @@ a{color:var(--accent)}
 
 <main class="wrap">
   <section class="stage" id="stage">
-    <div class="mode-note"><span class="tag real" id="tag">Réel</span><p id="modeText"></p></div>
+    <div class="mode-note"><span class="tag real" id="tag">Réel</span><p id="modeText" class="stack"></p></div>
     <div class="viz">
       <div class="panel">
         <div><h2 data-i18n="wTitle">100 électeurs</h2><p class="sub" data-i18n="wSub">Comment 100 votes se sont répartis. Ces points ne changent pas.</p></div>
         <div class="waffle" id="waffle" aria-hidden="true"></div>
       </div>
       <div class="panel hemi">
-        <div><h2 data-i18n="hTitle">127 sièges</h2><p class="sub" id="hSub"></p></div>
+        <div><h2 data-i18n="hTitle">127 sièges</h2><p class="sub stack" id="hSub"></p></div>
         <svg id="hemi" viewBox="0 0 420 232" role="img" aria-labelledby="hemiDesc"><desc id="hemiDesc"></desc></svg>
-        <div class="legend-type" id="typeLegend" hidden>
+        <div class="legend-type off" id="typeLegend">
           <span><i></i><span data-i18n="lgD">Député de circonscription</span></span>
           <span><i class="ring"></i><span data-i18n="lgL">Député de liste (compensatoire)</span></span>
         </div>
         <div class="verdict">
-          <span class="chip" id="verdict"></span>
+          <span class="chip stack" id="verdict"></span>
           <div class="gal"><span class="n mono" id="gal">0</span><span class="l" data-i18n="gal">indice de distorsion (Gallagher) · 0 = parfait</span></div>
         </div>
       </div>
@@ -322,7 +340,7 @@ gal:'indice de distorsion (Gallagher) · 0 = parfait',
 maj:'{p} majoritaire · {s} sièges',min:'{p} minoritaire · {s} sièges sur {m} requis',
 majS:'majorité',noMajS:'pas de majorité',
 lTitle:'Votes et sièges, parti par parti',kV:'% des votes',kS:'% des sièges',axD:'écart',
-votes:'votes',seats:'sièges',seat:'siège',pts:'pts',listW:'liste',
+votes:'votes',seats:'sièges',seat:'siège',pts:'pts',listW:'dont {n} de liste',
 sEyebrow:'Comprendre',sTitle:'Trois façons de transformer des votes en sièges',
 sLede:"Aucun mode de scrutin n'est neutre : chacun fait des choix entre représentation fidèle, lien avec le territoire et stabilité du gouvernement.",
 pros:'Avantages',cons:'Limites',where:'Utilisé notamment :',
@@ -369,7 +387,7 @@ gal:'distortion index (Gallagher) · 0 = perfect',
 maj:'{p} majority · {s} seats',min:'{p} minority · {s} of {m} needed',
 majS:'majority',noMajS:'no majority',
 lTitle:'Votes and seats, party by party',kV:'% of votes',kS:'% of seats',axD:'gap',
-votes:'votes',seats:'seats',seat:'seat',pts:'pts',listW:'list',
+votes:'votes',seats:'seats',seat:'seat',pts:'pts',listW:'incl. {n} list',
 sEyebrow:'Understand',sTitle:'Three ways to turn votes into seats',
 sLede:"No voting system is neutral: each one trades off accurate representation, ties to a territory, and government stability.",
 pros:'Strengths',cons:'Limits',where:'Used in:',
@@ -478,29 +496,31 @@ function render(animate){
   $('#thumb').style.transform=`translateX(calc(${idx} * (100% + 4px)))`;
   document.querySelectorAll('.seg button').forEach(b=>{const on=b.dataset.mode===mode;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;});
   const tag=$('#tag');tag.textContent=mode==='fptp'?t.real:t.sim;tag.classList.toggle('real',mode==='fptp');
-  $('#modeText').textContent=fill(t['mode_'+mode],ctx);
-  $('#hSub').textContent=fill(t['hSub_'+mode],ctx);
-  $('#typeLegend').hidden=mode!=='mixed';
+  const MS=['fptp','prop','mixed'];
+  $('#modeText').innerHTML=MS.map(m=>`<span class="${m===mode?'':'off'}" ${m===mode?'':'aria-hidden="true"'}>${fill(t['mode_'+m],ctx)}</span>`).join('');
+  $('#hSub').innerHTML=MS.map(m=>`<span class="${m===mode?'':'off'}" ${m===mode?'':'aria-hidden="true"'}>${fill(t['hSub_'+m],ctx)}</span>`).join('');
+  $('#typeLegend').classList.toggle('off',mode!=='mixed');$('#typeLegend').setAttribute('aria-hidden',mode!=='mixed');
   // hemi
   drawHemi(animate);
   const bi=r.seats.indexOf(Math.max(...r.seats)), bp=D.P[bi], bs=r.seats[bi];
   big.textContent=bs; big.style.fill=cssv(bp.c);
   small.textContent=bs>=D.MAJ?t.majS:t.noMajS;
-  $('#verdict').innerHTML=`<i class="dot" style="background:${cssv(bp.c)}"></i><span>${fill(bs>=D.MAJ?t.maj:t.min,{p:bp.id,s:bs,m:D.MAJ})}</span>`;
+  $('#verdict').innerHTML=MS.map(m=>{const rr=D.res[m],j=rr.seats.indexOf(Math.max(...rr.seats)),pp=D.P[j],ss=rr.seats[j];
+    return `<span class="vline ${m===mode?'':'off'}" ${m===mode?'':'aria-hidden="true"'}><i class="dot" style="background:${cssv(pp.c)}"></i><span>${fill(ss>=D.MAJ?t.maj:t.min,{p:pp.id,s:ss,m:D.MAJ})}</span></span>`;}).join('');
   $('#gal').textContent=fmt(gallagher(D,r.seats));
   $('#hemiDesc').textContent=fill(t.hemiDesc,{N:D.N,list:D.P.map((p,i)=>`${p.n[lang]}: ${r.seats[i]}`).join(', ')});
   // rows
   const order=[...D.P.map((p,i)=>({p,i})),{p:D.oth,i:-1}].sort((a,b)=>b.p.v-a.p.v);
   const rows=$('#rows');
-  if(!rows.children.length){order.forEach(({p})=>{const d=document.createElement('div');d.className='row';d.dataset.p=p.id;d.innerHTML=`<div class="who"><i class="dot" style="background:${cssv(p.c)}"></i><div style="min-width:0"><b></b><small></small></div></div><div class="bars"><div class="bar v"><span class="val"></span><span class="track"><span class="fill" style="background-color:${cssv(p.c)}"></span></span></div><div class="bar s"><span class="val"></span><span class="track"><span class="fill" style="background:${cssv(p.c)}"></span></span></div></div><div class="delta mono"></div>`;rows.appendChild(d);
+  if(!rows.children.length){order.forEach(({p})=>{const d=document.createElement('div');d.className='row';d.dataset.p=p.id;d.innerHTML=`<div class="who"><i class="dot" style="background:${cssv(p.c)}"></i><div style="min-width:0"><b></b><span class="lst"></span><small></small></div></div><div class="bars"><div class="bar v"><span class="val"></span><span class="track"><span class="fill" style="background-color:${cssv(p.c)}"></span></span></div><div class="bar s"><span class="val"></span><span class="track"><span class="fill" style="background:${cssv(p.c)}"></span></span></div></div><div class="delta mono"></div>`;rows.appendChild(d);
     d.addEventListener('mouseenter',()=>hl(p.id));d.addEventListener('mouseleave',()=>hl(null));});}
   order.forEach(({p,i})=>{const d=rows.querySelector(`[data-p="${p.id}"]`);const s=i<0?0:r.seats[i];const sp=s/D.N*100;const dl=sp-p.v;
     d.querySelector('.who b').textContent=p.id==='OTH'?p.n[lang]:p.id;
     d.querySelector('.who small').textContent=p.id==='OTH'?'':p.n[lang];
     d.querySelector('.bar.v .val').innerHTML=`<b>${pct(p.v)}</b> ${t.votes}`;
     d.querySelector('.bar.v .fill').style.width=Math.min(100,p.v/75*100)+'%';
-    const lst=i>=0&&r.list[i]?` <span style="opacity:.75">(${r.list[i]} ${t.listW})</span>`:'';
-    d.querySelector('.bar.s .val').innerHTML=`<b>${s}</b> ${(s===1||(lang==='fr'&&s===0))?t.seat:t.seats} · ${pct(sp)}${lst}`;
+    const lst=d.querySelector('.lst');lst.textContent=i>=0&&r.list[i]?fill(t.listW,{n:r.list[i]}):'';lst.hidden=!lst.textContent;
+    d.querySelector('.bar.s .val').innerHTML=`<b>${s}</b> ${(s===1||(lang==='fr'&&s===0))?t.seat:t.seats} · ${pct(sp)}`;
     d.querySelector('.bar.s .fill').style.width=Math.min(100,sp/75*100)+'%';
     const sign=dl>0.05?'+':dl<-0.05?'−':'';
     d.querySelector('.delta').innerHTML=`${sign}${fmt(Math.abs(dl))}<small>${t.pts}</small>`;
